@@ -32,14 +32,19 @@ function extractLocators() {
     const fileContent = fs.readFileSync(LOCATORS_FILE_PATH, 'utf8');
     const locators = {};
     
-    // Regular expression to match locator definitions
-    // Matches patterns like: LOCATOR_NAME: 'selector-value'
-    const locatorRegex = /(\w+):\s*['"`]([^'"`]+)['"`]/g;
-    let match;
+    // Split content into lines and process each line
+    const lines = fileContent.split('\n');
     
-    while ((match = locatorRegex.exec(fileContent)) !== null) {
-      const [, name, value] = match;
-      locators[name] = value;
+    for (const line of lines) {
+      // Look for patterns like: LOCATOR_NAME: '[selector]'
+      const match = line.match(/^\s*(\w+):\s*['"`](.+)['"`],?\s*$/);
+      if (match) {
+        const [, name, value] = match;
+        // Only add if it's a complete selector
+        if (value && value.length > 5 && value.includes('data-testid=')) {
+          locators[name] = value;
+        }
+      }
     }
     
     return locators;
@@ -183,9 +188,7 @@ function validateLocators() {
 }
 
 // Run validation if this script is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const isValid = validateLocators();
-  process.exit(isValid ? 0 : 1);
-}
+const isValid = validateLocators();
+process.exit(isValid ? 0 : 1);
 
 export { validateLocators, extractLocators, findDuplicates, checkForHardcodedSelectors }; 
