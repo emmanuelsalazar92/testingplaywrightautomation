@@ -1,0 +1,52 @@
+name: Naming Convention Validation
+
+on:
+  pull_request:
+    branches: [ main, master ]
+  push:
+    branches: [ main, master ]
+
+jobs:
+  validate-naming:
+    name: Naming Convention Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Validate naming conventions
+      run: npm run validate:naming
+      
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { execSync } = require('child_process');
+          try {
+            execSync('npm run validate:naming', { stdio: 'pipe' });
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Naming Convention Validation Passed**\n\nAll files, classes, and methods follow the established naming conventions:\n\n- 📄 Files: `pageName_action.spec.js`\n- 🏗️ Classes: PascalCase\n- 🔧 Methods: camelCase\n- 📄 Page Objects: End with "Page"\n- 🧪 Tests: `should_actionName`'
+            });
+          } catch (error) {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Naming Convention Validation Failed**\n\nPlease ensure all files follow the naming conventions:\n\n- 📄 Files: `pageName_action.spec.js` (e.g., `login_success.spec.js`)\n- 🏗️ Classes: PascalCase (e.g., `LoginPage`, `UserDashboard`)\n- 🔧 Methods: camelCase (e.g., `clickLogin`, `fillEmail`)\n- 📄 Page Objects: Must end with "Page" (e.g., `LoginPage`)\n- 🧪 Tests: `should_actionName` (e.g., `should_login_successfully`)'
+            });
+          } 

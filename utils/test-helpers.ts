@@ -2,6 +2,10 @@ import { Page, expect } from '@playwright/test';
 
 /**
  * Utility class for common test operations
+ * 
+ * This file contains only utility functions for test operations.
+ * Locators are centralized in locators/index.js
+ * Test data is centralized in data/test-data.js
  */
 export class TestHelpers {
   /**
@@ -72,6 +76,38 @@ export class TestHelpers {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
+  }
+
+  /**
+   * Wait for network requests to complete
+   */
+  static async waitForNetworkIdle(page: Page, timeout = 30000): Promise<void> {
+    await page.waitForLoadState('networkidle', { timeout });
+  }
+
+  /**
+   * Wait for specific URL pattern
+   */
+  static async waitForUrl(page: Page, urlPattern: string | RegExp, timeout = 10000): Promise<void> {
+    await page.waitForURL(urlPattern, { timeout });
+  }
+
+  /**
+   * Scroll element into view
+   */
+  static async scrollIntoView(page: Page, selector: string): Promise<void> {
+    const element = page.locator(selector);
+    await element.scrollIntoViewIfNeeded();
+  }
+
+  /**
+   * Clear and fill input field
+   */
+  static async clearAndFill(page: Page, selector: string, value: string): Promise<void> {
+    const field = page.locator(selector);
+    await field.waitFor({ state: 'visible' });
+    await field.clear();
+    await field.fill(value);
   }
 }
 
