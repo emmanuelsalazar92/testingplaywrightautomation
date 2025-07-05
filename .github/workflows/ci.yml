@@ -169,15 +169,30 @@ jobs:
       - name: Analyze coverage results
         run: |
           # Check if coverage report exists
-          if [ -f "test-results/coverage.json" ]; then
+          if [ -f "coverage/coverage-final.json" ]; then
             echo "📊 Coverage report found"
             
-            # Extract coverage percentage (simplified - you might need to adjust based on actual report format)
+            # Extract coverage percentage from c8 coverage-final.json
             COVERAGE_PERCENTAGE=$(node -e "
               try {
-                const coverage = require('./test-results/coverage.json');
-                const totalCoverage = coverage.total || coverage.summary?.total || 0;
-                console.log(Math.round(totalCoverage * 100));
+                const coverage = require('./coverage/coverage-final.json');
+                let totalLines = 0;
+                let coveredLines = 0;
+                
+                // Calculate total coverage from all files
+                Object.values(coverage).forEach(file => {
+                  if (file.s) {
+                    Object.values(file.s).forEach(hitCount => {
+                      totalLines++;
+                      if (hitCount > 0) {
+                        coveredLines++;
+                      }
+                    });
+                  }
+                });
+                
+                const percentage = totalLines > 0 ? (coveredLines / totalLines) * 100 : 0;
+                console.log(Math.round(percentage));
               } catch (e) {
                 console.log('0');
               }
@@ -205,7 +220,7 @@ jobs:
         if: always()
         with:
           name: coverage-report
-          path: test-results/
+          path: coverage/
           retention-days: 30
 
   playwright-tests:
