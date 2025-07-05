@@ -210,14 +210,14 @@ export class LoginPage {
    * Get email field value
    */
   async getEmailValue(): Promise<string> {
-    return this.emailInput.inputValue();
+    return await this.emailInput.inputValue();
   }
 
   /**
    * Get password field value
    */
   async getPasswordValue(): Promise<string> {
-    return this.passwordInput.inputValue();
+    return await this.passwordInput.inputValue();
   }
 
   /**
