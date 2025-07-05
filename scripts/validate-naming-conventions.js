@@ -74,7 +74,7 @@ function extractClasses(filePath) {
       // Filter out common non-class patterns
       const nonClassPatterns = [
         'for', 'uses', 'names', 'with', 'from', 'into', 'over', 'under',
-        'test', 'describe', 'beforeEach', 'afterEach', 'beforeAll', 'afterAll'
+        'test', 'describe', 'beforeEach', 'afterEach', 'beforeAll', 'afterAll',
       ];
       
       if (nonClassPatterns.includes(className)) {
@@ -110,7 +110,7 @@ function extractMethods(filePath) {
         'console', 'process', 'require', 'import', 'export', 'default',
         'test', 'describe', 'beforeEach', 'afterEach', 'beforeAll', 'afterAll',
         'expect', 'page', 'browser', 'context', 'new', 'await', 'return',
-        'LoginPage', 'TestHelpers', 'TestData', 'Selectors' // Common class names
+        'LoginPage', 'TestHelpers', 'TestData', 'Selectors', // Common class names
       ];
       
       if (nonMethodPatterns.includes(methodName)) {
@@ -272,7 +272,7 @@ function validateNamingConventions() {
   
   // Filter out validation scripts to avoid false positives
   const filesToValidate = allFiles.filter(file => 
-    !file.includes('scripts/validate-')
+    !file.includes('scripts/validate-'),
   );
   
   console.log(`📊 Found ${filesToValidate.length} files to validate\n`);
