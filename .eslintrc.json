@@ -61,6 +61,15 @@
         "no-console": "off",
         "max-len": "off"
       }
+    },
+    {
+      "files": ["tests-examples/**/*.ts"],
+      "rules": {
+        "no-undef": "off",
+        "no-warning-comments": "off",
+        "max-len": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     }
   ]
 } 

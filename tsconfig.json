@@ -25,6 +25,9 @@
   "include": [
     "tests/**/*",
     "utils/**/*",
+    "e2e/**/*",
+    "tests-examples/**/*",
+    "playwright.config.ts",
     "global-setup.ts",
     "global-teardown.ts"
   ],

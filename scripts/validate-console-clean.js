@@ -11,35 +11,35 @@
  * - Reduces noise in CI/CD logs
  */
 
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
 // import { fileURLToPath } from 'url'; // Not used in this script
 
 // const __filename = fileURLToPath(import.meta.url); // Not used in this script
 // const __dirname = path.dirname(__filename); // Not used in this script
 
 // Paths to check for console issues
-const PATHS_TO_CHECK = ["test-results", "playwright-report"];
+const PATHS_TO_CHECK = ['test-results', 'playwright-report'];
 
 // Patterns to detect unwanted console output
 const CONSOLE_PATTERNS = {
-	// Unwanted console methods
-	CONSOLE_LOGS: /console\.(log|warn|error|info|debug)\s*\(/g,
+  // Unwanted console methods
+  CONSOLE_LOGS: /console\.(log|warn|error|info|debug)\s*\(/g,
 
-	// Debug statements
-	DEBUG_STATEMENTS: /debugger\s*;/g,
+  // Debug statements
+  DEBUG_STATEMENTS: /debugger\s*;/g,
 
-	// Alert statements
-	ALERT_STATEMENTS: /alert\s*\(/g,
+  // Alert statements
+  ALERT_STATEMENTS: /alert\s*\(/g,
 
-	// Print statements (if using print instead of console)
-	PRINT_STATEMENTS: /print\s*\(/g,
+  // Print statements (if using print instead of console)
+  PRINT_STATEMENTS: /print\s*\(/g,
 
-	// Common debugging patterns
-	DEBUG_PATTERNS: /(?:TODO|FIXME|HACK|XXX)\s*:/gi,
+  // Common debugging patterns
+  DEBUG_PATTERNS: /(?:TODO|FIXME|HACK|XXX)\s*:/gi,
 
-	// Hardcoded credentials (basic pattern)
-	HARDCODED_CREDENTIALS:
+  // Hardcoded credentials (basic pattern)
+  HARDCODED_CREDENTIALS:
 		/(?:password|secret|key|token)\s*[:=]\s*['"`][^'"`]+['"`]/gi,
 };
 
@@ -50,24 +50,24 @@ const CONSOLE_PATTERNS = {
  * @returns {boolean} Whether console usage is allowed
  */
 function isAllowedConsole(line, filePath) {
-	// Allow console usage in validation scripts as they are utility tools
-	// that need to provide user feedback
-	if (filePath && filePath.includes("scripts/validate-")) {
-		return true;
-	}
+  // Allow console usage in validation scripts as they are utility tools
+  // that need to provide user feedback
+  if (filePath && filePath.includes('scripts/validate-')) {
+    return true;
+  }
 
-	// Allow console usage in specific patterns for debugging
-	const allowedPatterns = [
-		/console\.warn.*Warning:/,
-		/console\.error.*Error:/,
-		/console\.log.*🔍/,
-		/console\.log.*📊/,
-		/console\.log.*✅/,
-		/console\.log.*❌/,
-		/console\.log.*💡/,
-	];
+  // Allow console usage in specific patterns for debugging
+  const allowedPatterns = [
+    /console\.warn.*Warning:/,
+    /console\.error.*Error:/,
+    /console\.log.*🔍/,
+    /console\.log.*📊/,
+    /console\.log.*✅/,
+    /console\.log.*❌/,
+    /console\.log.*💡/,
+  ];
 
-	return allowedPatterns.some((pattern) => pattern.test(line));
+  return allowedPatterns.some((pattern) => pattern.test(line));
 }
 
 /**
@@ -76,46 +76,46 @@ function isAllowedConsole(line, filePath) {
  * @returns {Array} Array of issues found
  */
 function scanFileForConsoleIssues(filePath) {
-	const issues = [];
+  const issues = [];
 
-	try {
-		const content = fs.readFileSync(filePath, "utf8");
-		const lines = content.split("\n");
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split('\n');
 
-		lines.forEach((line, lineNumber) => {
-			const trimmedLine = line.trim();
+    lines.forEach((line, lineNumber) => {
+      const trimmedLine = line.trim();
 
-			// Skip empty lines and comments
-			if (
-				!trimmedLine ||
-				trimmedLine.startsWith("//") ||
-				trimmedLine.startsWith("/*")
-			) {
-				return;
-			}
+      // Skip empty lines and comments
+      if (
+        !trimmedLine ||
+				trimmedLine.startsWith('//') ||
+				trimmedLine.startsWith('/*')
+      ) {
+        return;
+      }
 
-			// Check for console issues
-			for (const [patternName, pattern] of Object.entries(CONSOLE_PATTERNS)) {
-				const matches = trimmedLine.match(pattern);
+      // Check for console issues
+      for (const [patternName, pattern] of Object.entries(CONSOLE_PATTERNS)) {
+        const matches = trimmedLine.match(pattern);
 
-				if (matches && !isAllowedConsole(trimmedLine, filePath)) {
-					issues.push({
-						type: patternName,
-						line: lineNumber + 1,
-						content: trimmedLine,
-						file: path.relative(process.cwd(), filePath),
-					});
-				}
-			}
-		});
-	} catch (error) {
-		// eslint-disable-next-line max-len
-		console.warn(
-			`⚠️  Warning: Could not read file ${filePath}: ${error.message}`
-		);
-	}
+        if (matches && !isAllowedConsole(trimmedLine, filePath)) {
+          issues.push({
+            type: patternName,
+            line: lineNumber + 1,
+            content: trimmedLine,
+            file: path.relative(process.cwd(), filePath),
+          });
+        }
+      }
+    });
+  } catch (error) {
+    // eslint-disable-next-line max-len
+    console.warn(
+      `⚠️  Warning: Could not read file ${filePath}: ${error.message}`,
+    );
+  }
 
-	return issues;
+  return issues;
 }
 
 /**
@@ -124,67 +124,67 @@ function scanFileForConsoleIssues(filePath) {
  * @returns {Array} Array of console errors found
  */
 function scanTestResultsForConsoleErrors(resultsPath) {
-	const issues = [];
+  const issues = [];
 
-	try {
-		if (fs.existsSync(resultsPath)) {
-			const files = fs.readdirSync(resultsPath);
+  try {
+    if (fs.existsSync(resultsPath)) {
+      const files = fs.readdirSync(resultsPath);
 
-			for (const file of files) {
-				const filePath = path.join(resultsPath, file);
-				const stat = fs.statSync(filePath);
+      for (const file of files) {
+        const filePath = path.join(resultsPath, file);
+        const stat = fs.statSync(filePath);
 
-				if (
-					stat.isFile() &&
-					(file.endsWith(".json") ||
-						file.endsWith(".txt") ||
-						file.endsWith(".log"))
-				) {
-					try {
-						const content = fs.readFileSync(filePath, "utf8");
+        if (
+          stat.isFile() &&
+					(file.endsWith('.json') ||
+						file.endsWith('.txt') ||
+						file.endsWith('.log'))
+        ) {
+          try {
+            const content = fs.readFileSync(filePath, 'utf8');
 
-						// Look for console errors in test results
-						const consoleErrorMatches = content.match(/console\.error[^}]*}/g);
-						if (consoleErrorMatches) {
-							consoleErrorMatches.forEach((match) => {
-								issues.push({
-									type: "CONSOLE_ERROR_IN_RESULTS",
-									file: path.relative(process.cwd(), filePath),
-									content: `${match.substring(0, 100)}...`,
-									severity: "high",
-								});
-							});
-						}
+            // Look for console errors in test results
+            const consoleErrorMatches = content.match(/console\.error[^}]*}/g);
+            if (consoleErrorMatches) {
+              consoleErrorMatches.forEach((match) => {
+                issues.push({
+                  type: 'CONSOLE_ERROR_IN_RESULTS',
+                  file: path.relative(process.cwd(), filePath),
+                  content: `${match.substring(0, 100)}...`,
+                  severity: 'high',
+                });
+              });
+            }
 
-						// Look for JavaScript errors
-						const jsErrorMatches = content.match(
-							/Error:|Exception:|TypeError|ReferenceError/g
-						);
-						if (jsErrorMatches) {
-							jsErrorMatches.forEach((match) => {
-								issues.push({
-									type: "JAVASCRIPT_ERROR",
-									file: path.relative(process.cwd(), filePath),
-									content: match,
-									severity: "high",
-								});
-							});
-						}
-					} catch (error) {
-						console.warn(
-							`⚠️  Warning: Could not read result file ${filePath}: ${error.message}`
-						);
-					}
-				}
-			}
-		}
-	} catch (error) {
-		console.warn(
-			`⚠️  Warning: Could not scan results directory ${resultsPath}: ${error.message}`
-		);
-	}
+            // Look for JavaScript errors
+            const jsErrorMatches = content.match(
+              /Error:|Exception:|TypeError|ReferenceError/g,
+            );
+            if (jsErrorMatches) {
+              jsErrorMatches.forEach((match) => {
+                issues.push({
+                  type: 'JAVASCRIPT_ERROR',
+                  file: path.relative(process.cwd(), filePath),
+                  content: match,
+                  severity: 'high',
+                });
+              });
+            }
+          } catch (error) {
+            console.warn(
+              `⚠️  Warning: Could not read result file ${filePath}: ${error.message}`,
+            );
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(
+      `⚠️  Warning: Could not scan results directory ${resultsPath}: ${error.message}`,
+    );
+  }
 
-	return issues;
+  return issues;
 }
 
 /**
@@ -193,111 +193,111 @@ function scanTestResultsForConsoleErrors(resultsPath) {
  * @param {Array} extensions - File extensions to check
  * @returns {Array} Array of file paths
  */
-function scanDirectory(dirPath, extensions = [".js", ".ts"]) {
-	const files = [];
+function scanDirectory(dirPath, extensions = ['.js', '.ts']) {
+  const files = [];
 
-	try {
-		if (!fs.existsSync(dirPath)) return files;
+  try {
+    if (!fs.existsSync(dirPath)) return files;
 
-		const items = fs.readdirSync(dirPath);
+    const items = fs.readdirSync(dirPath);
 
-		for (const item of items) {
-			const fullPath = path.join(dirPath, item);
-			const stat = fs.statSync(fullPath);
+    for (const item of items) {
+      const fullPath = path.join(dirPath, item);
+      const stat = fs.statSync(fullPath);
 
-			if (stat.isDirectory()) {
-				files.push(...scanDirectory(fullPath, extensions));
-			} else if (stat.isFile()) {
-				const ext = path.extname(item);
-				if (extensions.includes(ext)) {
-					files.push(fullPath);
-				}
-			}
-		}
-	} catch (error) {
-		console.warn(
-			`⚠️  Warning: Could not scan directory ${dirPath}: ${error.message}`
-		);
-	}
+      if (stat.isDirectory()) {
+        files.push(...scanDirectory(fullPath, extensions));
+      } else if (stat.isFile()) {
+        const ext = path.extname(item);
+        if (extensions.includes(ext)) {
+          files.push(fullPath);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(
+      `⚠️  Warning: Could not scan directory ${dirPath}: ${error.message}`,
+    );
+  }
 
-	return files;
+  return files;
 }
 
 /**
  * Main validation function
  */
 function validateConsoleClean() {
-	console.log("🔍 Validating console output for unwanted logs and errors...\n");
+  console.log('🔍 Validating console output for unwanted logs and errors...\n');
 
-	const allIssues = [];
+  const allIssues = [];
 
-	// Scan source code files
-	const sourceDirectories = ["tests", "pages", "utils", "scripts"];
-	const sourceFiles = [];
+  // Scan source code files
+  const sourceDirectories = ['tests', 'pages', 'utils', 'scripts'];
+  const sourceFiles = [];
 
-	for (const dir of sourceDirectories) {
-		sourceFiles.push(...scanDirectory(dir, [".js", ".ts"]));
-	}
+  for (const dir of sourceDirectories) {
+    sourceFiles.push(...scanDirectory(dir, ['.js', '.ts']));
+  }
 
-	console.log(
-		`📊 Scanning ${sourceFiles.length} source files for console issues...`
-	);
+  console.log(
+    `📊 Scanning ${sourceFiles.length} source files for console issues...`,
+  );
 
-	// Check source files for console issues
-	sourceFiles.forEach((filePath) => {
-		const issues = scanFileForConsoleIssues(filePath);
-		allIssues.push(...issues);
-	});
+  // Check source files for console issues
+  sourceFiles.forEach((filePath) => {
+    const issues = scanFileForConsoleIssues(filePath);
+    allIssues.push(...issues);
+  });
 
-	// Check test results for console errors
-	console.log("📊 Scanning test results for console errors...");
+  // Check test results for console errors
+  console.log('📊 Scanning test results for console errors...');
 
-	for (const resultsPath of PATHS_TO_CHECK) {
-		const resultIssues = scanTestResultsForConsoleErrors(resultsPath);
-		allIssues.push(...resultIssues);
-	}
+  for (const resultsPath of PATHS_TO_CHECK) {
+    const resultIssues = scanTestResultsForConsoleErrors(resultsPath);
+    allIssues.push(...resultIssues);
+  }
 
-	if (allIssues.length === 0) {
-		console.log("✅ No console issues found!");
-		console.log("🎉 Console output is clean and professional.");
-		return true;
-	}
+  if (allIssues.length === 0) {
+    console.log('✅ No console issues found!');
+    console.log('🎉 Console output is clean and professional.');
+    return true;
+  }
 
-	console.log("❌ Found console issues:");
-	console.log("=".repeat(60));
+  console.log('❌ Found console issues:');
+  console.log('='.repeat(60));
 
-	// Group issues by type
-	const issuesByType = {};
-	allIssues.forEach((issue) => {
-		if (!issuesByType[issue.type]) {
-			issuesByType[issue.type] = [];
-		}
-		issuesByType[issue.type].push(issue);
-	});
+  // Group issues by type
+  const issuesByType = {};
+  allIssues.forEach((issue) => {
+    if (!issuesByType[issue.type]) {
+      issuesByType[issue.type] = [];
+    }
+    issuesByType[issue.type].push(issue);
+  });
 
-	for (const [type, issues] of Object.entries(issuesByType)) {
-		console.log(`\n🔴 ${type} (${issues.length} issues):`);
+  for (const [type, issues] of Object.entries(issuesByType)) {
+    console.log(`\n🔴 ${type} (${issues.length} issues):`);
 
-		issues.forEach((issue) => {
-			if (issue.line) {
-				console.log(`   📁 ${issue.file}:${issue.line}`);
-			} else {
-				console.log(`   📁 ${issue.file}`);
-			}
-			console.log(`   💬 ${issue.content}`);
-		});
-	}
+    issues.forEach((issue) => {
+      if (issue.line) {
+        console.log(`   📁 ${issue.file}:${issue.line}`);
+      } else {
+        console.log(`   📁 ${issue.file}`);
+      }
+      console.log(`   💬 ${issue.content}`);
+    });
+  }
 
-	console.log(`\n${"=".repeat(60)}`);
-	console.log("💡 Recommendations:");
-	console.log("   - Remove console.log statements from production code");
-	console.log("   - Use proper logging framework for debugging");
-	console.log("   - Remove debugger statements");
-	console.log("   - Clean up TODO/FIXME comments");
-	console.log("   - Remove hardcoded credentials");
-	console.log("   - Use environment variables for sensitive data");
+  console.log(`\n${'='.repeat(60)}`);
+  console.log('💡 Recommendations:');
+  console.log('   - Remove console.log statements from production code');
+  console.log('   - Use proper logging framework for debugging');
+  console.log('   - Remove debugger statements');
+  console.log('   - Clean up TODO/FIXME comments');
+  console.log('   - Remove hardcoded credentials');
+  console.log('   - Use environment variables for sensitive data');
 
-	return false;
+  return false;
 }
 
 // Run validation if this script is executed directly
