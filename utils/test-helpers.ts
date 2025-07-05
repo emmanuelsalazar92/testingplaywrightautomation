@@ -115,11 +115,11 @@ export class TestHelpers {
  * Test data constants
  */
 export const TEST_DATA = {
-  VALID_EMAIL: 'admin@test.com',
-  VALID_PASSWORD: 'password123',
-  INVALID_EMAIL: 'invalid@test.com',
-  INVALID_PASSWORD: 'wrongpassword',
-  BASE_URL: 'https://v0-react-frontend-application-gold.vercel.app',
+  VALID_EMAIL: process.env.TEST_VALID_EMAIL || 'admin@test.com',
+  VALID_PASSWORD: process.env.TEST_VALID_PASSWORD || 'password123',
+  INVALID_EMAIL: process.env.TEST_INVALID_EMAIL || 'invalid@test.com',
+  INVALID_PASSWORD: process.env.TEST_INVALID_PASSWORD || 'wrongpassword',
+  BASE_URL: process.env.TEST_BASE_URL || 'https://v0-react-frontend-application-gold.vercel.app',
 } as const;
 
 /**
