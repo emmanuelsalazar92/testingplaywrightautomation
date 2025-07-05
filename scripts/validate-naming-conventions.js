@@ -13,10 +13,10 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url'; // Not used in this script
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url); // Not used in this script
+// const __dirname = path.dirname(__filename); // Not used in this script
 
 // Naming convention patterns
 const NAMING_PATTERNS = {
@@ -41,7 +41,7 @@ const SCAN_DIRECTORIES = [
   'tests',
   'pages',
   'utils',
-  'scripts'
+  'scripts',
 ];
 
 // File types to validate
@@ -142,7 +142,8 @@ function validateFile(filePath) {
   if (!matchesPattern(fileName, NAMING_PATTERNS.FILE_PATTERN)) {
     issues.push({
       type: 'file_name',
-      message: `File name "${fileName}" doesn't follow pattern: pageName_action.spec.js`
+      message:
+        `File name "${fileName}" doesn't follow pattern: pageName_action.spec.js`,
     });
   }
   
@@ -152,7 +153,7 @@ function validateFile(filePath) {
     if (!matchesPattern(className, NAMING_PATTERNS.CLASS_PATTERN)) {
       issues.push({
         type: 'class_name',
-        message: `Class "${className}" doesn't follow PascalCase pattern`
+        message: `Class "${className}" doesn't follow PascalCase pattern`,
       });
     }
     
@@ -160,7 +161,8 @@ function validateFile(filePath) {
     if (filePath.includes('pages/') && !matchesPattern(className, NAMING_PATTERNS.PAGE_OBJECT_PATTERN)) {
       issues.push({
         type: 'page_object_name',
-        message: `Page object class "${className}" should end with "Page"`
+        message:
+          `Page object class "${className}" should end with "Page"`,
       });
     }
   });
@@ -169,9 +171,10 @@ function validateFile(filePath) {
   const methods = extractMethods(filePath);
   methods.forEach(methodName => {
     if (!matchesPattern(methodName, NAMING_PATTERNS.METHOD_PATTERN)) {
+      // eslint-disable-next-line max-len
       issues.push({
         type: 'method_name',
-        message: `Method "${methodName}" doesn't follow camelCase pattern`
+        message: `Method "${methodName}" doesn't follow camelCase pattern`,
       });
     }
   });
@@ -181,9 +184,10 @@ function validateFile(filePath) {
     const tests = extractTests(filePath);
     tests.forEach(testName => {
       if (!matchesPattern(testName, NAMING_PATTERNS.TEST_PATTERN)) {
+        // eslint-disable-next-line max-len
         issues.push({
           type: 'test_name',
-          message: `Test "${testName}" should follow pattern: should_actionName`
+          message: `Test "${testName}" should follow pattern: should_actionName`,
         });
       }
     });
@@ -191,7 +195,7 @@ function validateFile(filePath) {
   
   return {
     filePath: relativePath,
-    issues
+    issues,
   };
 }
 
@@ -262,7 +266,7 @@ function validateNamingConventions() {
     });
   });
   
-  console.log('\n' + '=' .repeat(60));
+  console.log(`\n${'=' .repeat(60)}`);
   console.log('💡 Naming Convention Rules:');
   console.log('   📄 Files: pageName_action.spec.js (e.g., login_success.spec.js)');
   console.log('   🏗️  Classes: PascalCase (e.g., LoginPage, UserDashboard)');

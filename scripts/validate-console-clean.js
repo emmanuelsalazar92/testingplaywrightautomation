@@ -13,15 +13,15 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url'; // Not used in this script
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url); // Not used in this script
+// const __dirname = path.dirname(__filename); // Not used in this script
 
 // Paths to check for console issues
 const PATHS_TO_CHECK = [
   'test-results',
-  'playwright-report'
+  'playwright-report',
 ];
 
 // Patterns to detect unwanted console output
@@ -89,13 +89,16 @@ function scanFileForConsoleIssues(filePath) {
             type: patternName,
             line: lineNumber + 1,
             content: trimmedLine,
-            file: path.relative(process.cwd(), filePath)
+            file: path.relative(process.cwd(), filePath),
           });
         }
       }
     });
   } catch (error) {
-    console.warn(`⚠️  Warning: Could not read file ${filePath}: ${error.message}`);
+    // eslint-disable-next-line max-len
+    console.warn(
+      `⚠️  Warning: Could not read file ${filePath}: ${error.message}`,
+    );
   }
   
   return issues;
@@ -128,8 +131,8 @@ function scanTestResultsForConsoleErrors(resultsPath) {
                 issues.push({
                   type: 'CONSOLE_ERROR_IN_RESULTS',
                   file: path.relative(process.cwd(), filePath),
-                  content: match.substring(0, 100) + '...',
-                  severity: 'high'
+                  content: `${match.substring(0, 100)}...`,
+                  severity: 'high',
                 });
               });
             }
@@ -142,7 +145,7 @@ function scanTestResultsForConsoleErrors(resultsPath) {
                   type: 'JAVASCRIPT_ERROR',
                   file: path.relative(process.cwd(), filePath),
                   content: match,
-                  severity: 'high'
+                  severity: 'high',
                 });
               });
             }
@@ -256,7 +259,7 @@ function validateConsoleClean() {
     });
   }
   
-  console.log('\n' + '=' .repeat(60));
+  console.log(`\n${'=' .repeat(60)}`);
   console.log('💡 Recommendations:');
   console.log('   - Remove console.log statements from production code');
   console.log('   - Use proper logging framework for debugging');

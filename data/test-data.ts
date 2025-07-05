@@ -25,7 +25,7 @@ export const LOGIN_TEST_DATA = {
   EMPTY_EMAIL: '',
   EMPTY_PASSWORD: '',
   INVALID_EMAIL_FORMAT: 'invalid-email',
-  LONG_EMAIL: 'a'.repeat(100) + '@example.com',
+  LONG_EMAIL: `${'a'.repeat(100)}@example.com`,
   LONG_PASSWORD: 'a'.repeat(100),
 } as const;
 

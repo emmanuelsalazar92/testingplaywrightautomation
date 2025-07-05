@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 /**
+ * eslint-disable-next-line max-len
  * Locator Duplicate Validator
  * 
- * This script validates that there are no duplicate locator values in the centralized locators file.
+ * This script validates that there are no duplicate locator values in the
+ * centralized locators file.
  * It's important for automation projects because:
  * - Duplicate locators can cause confusion about which element to interact with
  * - They indicate poor organization and maintenance issues
@@ -74,14 +76,17 @@ function checkForHardcodedSelectors() {
               type: 'hardcoded_selector',
               value: match,
               file: 'data/test-data.ts',
-              recommendation: 'Move selector to locators/index.js'
+              recommendation: 'Move selector to locators/index.js',
             });
           });
         }
       });
     }
   } catch (error) {
-    console.warn('⚠️  Warning: Could not check test data file for hardcoded selectors:', error.message);
+    console.warn(
+      '⚠️  Warning: Could not check test data file for hardcoded selectors:',
+      error.message,
+    );
   }
   
   return hardcodedSelectors;
@@ -109,7 +114,7 @@ function findDuplicates(locators) {
     if (names.length > 1) {
       duplicates.push({
         value,
-        names
+        names,
       });
     }
   }
@@ -153,7 +158,9 @@ function validateLocators() {
     hardcodedSelectors.forEach((selector, index) => {
       console.log(`\n${index + 1}. File: ${selector.file}`);
       console.log(`   Selector: ${selector.value}`);
-      console.log(`   Recommendation: ${selector.recommendation}`);
+      console.log(
+        `   Recommendation: ${selector.recommendation}`,
+      );
     });
   }
   
@@ -164,7 +171,7 @@ function validateLocators() {
     return true;
   }
   
-  console.log('\n' + '=' .repeat(50));
+  console.log(`\n${'=' .repeat(50)}`);
   console.log('💡 Recommendations:');
   console.log('   - Review and consolidate duplicate locators');
   console.log('   - Ensure each locator has a unique purpose');

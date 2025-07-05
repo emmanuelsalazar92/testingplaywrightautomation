@@ -22,7 +22,7 @@ export class TestHelpers {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     await page.screenshot({ 
       path: `test-results/screenshots/${name}-${timestamp}.png`,
-      fullPage: true 
+      fullPage: true,
     });
   }
 

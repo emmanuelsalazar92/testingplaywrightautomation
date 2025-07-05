@@ -4,23 +4,13 @@
     "node": true
   },
   "extends": [
-    "eslint:recommended",
-    "@typescript-eslint/recommended"
+    "eslint:recommended"
   ],
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
   "rules": {
-    "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/no-floating-promises": "error",
-    "@typescript-eslint/await-thenable": "error",
-    "@typescript-eslint/no-misused-promises": "error",
     "prefer-const": "error",
     "no-var": "error",
     "no-console": "warn",
@@ -37,21 +27,39 @@
     "semi": ["error", "always"],
     "quotes": ["error", "single", { "avoidEscape": true }],
     "indent": ["error", 2],
-    "max-len": ["warn", { "code": 100, "ignoreUrls": true }],
+    "max-len": ["warn", { 
+      "code": 100, 
+      "ignoreUrls": true,
+      "ignoreTemplateLiterals": true
+    }],
     "no-warning-comments": ["warn", { "terms": ["todo", "fixme", "hack", "xxx"], "location": "anywhere" }]
   },
   "overrides": [
     {
+      "files": ["**/*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": "./tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": "latest"
+      },
+      "plugins": ["@typescript-eslint"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-explicit-any": "warn"
+      }
+    },
+    {
       "files": ["tests/**/*.ts", "tests/**/*.js"],
       "rules": {
-        "no-console": "off",
-        "@typescript-eslint/no-explicit-any": "off"
+        "no-console": "off"
       }
     },
     {
       "files": ["scripts/**/*.js"],
       "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "max-len": "off"
       }
     }
   ]

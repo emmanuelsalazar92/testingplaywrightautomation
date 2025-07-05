@@ -34,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npx eslint . --ext .ts,.js
+        run: npm run lint
 
       - name: Type check
         run: npm run type-check
