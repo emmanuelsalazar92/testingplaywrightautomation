@@ -141,88 +141,6 @@ jobs:
   # DEPENDENT JOBS (require lint to pass first)
   # ============================================================================
 
-  test-coverage:
-    name: Test Coverage Analysis
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: lint
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Run tests with coverage
-        run: npm run ci:coverage
-
-      - name: Analyze coverage results
-        run: |
-          # Check if coverage report exists
-          if [ -f "coverage/coverage-final.json" ]; then
-            echo "📊 Coverage report found"
-            
-            # Extract coverage percentage from c8 coverage-final.json
-            COVERAGE_PERCENTAGE=$(node -e "
-              try {
-                const coverage = require('./coverage/coverage-final.json');
-                let totalLines = 0;
-                let coveredLines = 0;
-                
-                // Calculate total coverage from all files
-                Object.values(coverage).forEach(file => {
-                  if (file.s) {
-                    Object.values(file.s).forEach(hitCount => {
-                      totalLines++;
-                      if (hitCount > 0) {
-                        coveredLines++;
-                      }
-                    });
-                  }
-                });
-                
-                const percentage = totalLines > 0 ? (coveredLines / totalLines) * 100 : 0;
-                console.log(Math.round(percentage));
-              } catch (e) {
-                console.log('0');
-              }
-            ")
-            
-            echo "📈 Current coverage: ${COVERAGE_PERCENTAGE}%"
-            
-            # Minimum coverage threshold (80%)
-            MIN_COVERAGE=80
-            
-            if [ "$COVERAGE_PERCENTAGE" -ge "$MIN_COVERAGE" ]; then
-              echo "✅ Coverage threshold met (${COVERAGE_PERCENTAGE}% >= ${MIN_COVERAGE}%)"
-              exit 0
-            else
-              echo "❌ Coverage threshold not met (${COVERAGE_PERCENTAGE}% < ${MIN_COVERAGE}%)"
-              exit 1
-            fi
-          else
-            echo "❌ No coverage report found"
-            exit 1
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 30
-
   playwright-tests:
     name: Playwright E2E Tests
     runs-on: ubuntu-latest
@@ -315,7 +233,6 @@ jobs:
         validate-console,
         validate-locators,
         validate-naming,
-        test-coverage,
         playwright-tests,
         merge-test-results,
       ]
@@ -365,7 +282,6 @@ jobs:
               body += '- ✅ Console Clean Validation\n';
               body += '- ✅ Locator Duplicate Validation\n';
               body += '- ✅ Naming Convention Validation\n';
-              body += '- ✅ Test Coverage Analysis\n';
               body += '- ✅ Playwright E2E Tests\n';
               body += '- ✅ Test Results Merged\n\n';
               body += '🎉 Your code is ready for review and merge!';

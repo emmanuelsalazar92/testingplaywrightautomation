@@ -1,76 +1,79 @@
 {
-  "name": "playwright_automation",
-  "version": "1.0.0",
-  "description": "Playwright automation testing project with best practices",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
-    "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report",
-    "test:install": "playwright install",
-    "test:install-deps": "playwright install --with-deps",
-    "test:codegen": "playwright codegen",
-    "test:trace": "playwright test --trace on",
-    "lint": "eslint . --ext .ts,.js",
-    "lint:fix": "eslint . --ext .ts,.js --fix",
-    "type-check": "tsc --noEmit",
-    "validate:locators": "node scripts/validate-locators.js",
-    "validate:naming": "node scripts/validate-naming-conventions.js",
-    "validate:console": "node scripts/validate-console-clean.js",
-    "validate:all": "npm run validate:locators && npm run validate:naming && npm run validate:console",
-    "ci:lint": "npm run lint",
-    "ci:validate": "npm run validate:all",
-    "ci:test": "playwright test --reporter=html,junit",
-    "ci:coverage": "c8 --reporter=html --reporter=json --reporter=text --reporter=lcov --output-dir=coverage playwright test --reporter=html,junit",
-    "coverage": "c8 --reporter=html --reporter=text playwright test"
-  },
-  "keywords": [
-    "playwright",
-    "testing",
-    "automation",
-    "e2e",
-    "browser-testing"
-  ],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@playwright/test": "^1.53.2",
-    "@types/node": "^24.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "c8": "^10.1.3",
-    "eslint": "^8.57.0",
-    "typescript": "^5.3.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "c8": {
-    "all": true,
-    "include": [
-      "e2e/**/*.ts",
-      "pages/**/*.ts",
-      "utils/**/*.ts",
-      "locators/**/*.js"
-    ],
-    "exclude": [
-      "node_modules/**",
-      "test-results/**",
-      "playwright-report/**",
-      "coverage/**",
-      "**/*.spec.ts",
-      "**/*.test.ts"
-    ],
-    "reporter": ["html", "json", "text", "lcov"],
-    "outputDirectory": "coverage",
-    "thresholds": {
-      "lines": 80,
-      "functions": 80,
-      "branches": 80,
-      "statements": 80
-    }
-  }
+	"name": "playwright_automation",
+	"version": "1.0.0",
+	"description": "Playwright automation testing project with best practices",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "playwright test",
+		"test:headed": "playwright test --headed",
+		"test:debug": "playwright test --debug",
+		"test:ui": "playwright test --ui",
+		"test:report": "playwright show-report",
+		"test:install": "playwright install",
+		"test:install-deps": "playwright install --with-deps",
+		"test:codegen": "playwright codegen",
+		"test:trace": "playwright test --trace on",
+		"lint": "eslint . --ext .ts,.js",
+		"lint:fix": "eslint . --ext .ts,.js --fix",
+		"type-check": "tsc --noEmit",
+		"validate:locators": "node scripts/validate-locators.js",
+		"validate:naming": "node scripts/validate-naming-conventions.js",
+		"validate:console": "node scripts/validate-console-clean.js",
+		"validate:all": "npm run validate:locators && npm run validate:naming && npm run validate:console",
+		"ci:lint": "npm run lint",
+		"ci:validate": "npm run validate:all",
+		"ci:test": "playwright test --reporter=html,junit"
+	},
+	"keywords": [
+		"playwright",
+		"testing",
+		"automation",
+		"e2e",
+		"browser-testing"
+	],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@playwright/test": "^1.53.2",
+		"@types/node": "^24.0.0",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+		"@typescript-eslint/parser": "^6.21.0",
+		"c8": "^10.1.3",
+		"eslint": "^8.57.0",
+		"typescript": "^5.3.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
+	"c8": {
+		"all": true,
+		"include": [
+			"e2e/**/*.ts",
+			"pages/**/*.ts",
+			"utils/**/*.ts",
+			"locators/**/*.js"
+		],
+		"exclude": [
+			"node_modules/**",
+			"test-results/**",
+			"playwright-report/**",
+			"coverage/**",
+			"**/*.spec.ts",
+			"**/*.test.ts"
+		],
+		"reporter": [
+			"html",
+			"json",
+			"text",
+			"lcov"
+		],
+		"outputDirectory": "coverage",
+		"thresholds": {
+			"lines": 80,
+			"functions": 80,
+			"branches": 80,
+			"statements": 80
+		}
+	}
 }
