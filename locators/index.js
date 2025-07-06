@@ -73,8 +73,8 @@ export const NAVIGATION_LOCATORS = {
 export const REGISTRATION_LOCATORS = {
   FIRST_NAME_INPUT: '[data-testid="first-name-input"]',
   LAST_NAME_INPUT: '[data-testid="last-name-input"]',
-  EMAIL_INPUT: '[data-testid="email-input"]',
-  PASSWORD_INPUT: '[data-testid="password-input"]',
+  EMAIL_INPUT: LOGIN_LOCATORS.EMAIL_INPUT,
+  PASSWORD_INPUT: LOGIN_LOCATORS.PASSWORD_INPUT,
   CONFIRM_PASSWORD_INPUT: '[data-testid="confirm-password-input"]',
   REGISTER_BUTTON: '[data-testid="register-button"]',
   TERMS_CHECKBOX: '[data-testid="terms-checkbox"]',

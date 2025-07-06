@@ -25,24 +25,41 @@ const TEST_DATA_FILE_PATH = path.join(__dirname, '..', 'data', 'test-data.ts');
 
 /**
  * Extract locator values from the locators file
- * @returns {Object} Object with locator name as key and value as value
+ * @returns {Object} Object with full locator name as key and value as value
  */
 function extractLocators() {
   try {
     const fileContent = fs.readFileSync(LOCATORS_FILE_PATH, 'utf8');
     const locators = {};
     
-    // Split content into lines and process each line
-    const lines = fileContent.split('\n');
+    // Regex para encontrar todos los objetos exportados (incluyendo los que están en múltiples líneas)
+    const objectRegex = /export\s+const\s+([A-Z0-9_]+)\s*=\s*\{([\s\S]*?)\};/gs;
+    let objectMatch;
     
-    for (const line of lines) {
-      // Look for patterns like: LOCATOR_NAME: '[selector]'
-      const match = line.match(/^\s*(\w+):\s*['"`](.+)['"`],?\s*$/);
-      if (match) {
-        const [, name, value] = match;
-        // Only add if it's a complete selector
-        if (value && value.length > 5 && value.includes('data-testid=')) {
-          locators[name] = value;
+    while ((objectMatch = objectRegex.exec(fileContent)) !== null) {
+      const objectName = objectMatch[1];
+      const objectBody = objectMatch[2];
+      
+      // Regex para encontrar todas las propiedades tipo: EMAIL_INPUT: '[selector]',
+      // Captura desde los dos puntos hasta la coma, incluyendo las comillas
+      const propRegex = /([A-Z0-9_]+):\s*([^,]+),?/g;
+      let propMatch;
+      
+      while ((propMatch = propRegex.exec(objectBody)) !== null) {
+        const prop = propMatch[1];
+        let value = propMatch[2].trim();
+        
+        // Remover comillas del inicio y final si existen
+        if ((value.startsWith("'") && value.endsWith("'")) || 
+            (value.startsWith('"') && value.endsWith('"')) ||
+            (value.startsWith('`') && value.endsWith('`'))) {
+          value = value.slice(1, -1);
+        }
+        
+        // Solo agregar si es un selector con data-testid
+        if (value && value.includes('data-testid=')) {
+          const fullName = `${objectName}.${prop}`;
+          locators[fullName] = value;
         }
       }
     }
