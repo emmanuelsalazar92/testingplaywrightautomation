@@ -7,7 +7,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "allowJs": true,
-    "checkJs": false,
+    "checkJs": true,
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
@@ -17,23 +17,32 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./*"],
       "@tests/*": ["./tests/*"],
-      "@utils/*": ["./utils/*"]
-    }
+      "@utils/*": ["./utils/*"],
+      "@pages/*": ["./pages/*"],
+      "@locators/*": ["./locators/*"],
+      "@data/*": ["./data/*"]
+    },
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true
   },
   "include": [
     "tests/**/*",
     "utils/**/*",
-    "e2e/**/*",
-    "tests-examples/**/*",
-    "playwright.config.ts",
-    "global-setup.ts",
-    "global-teardown.ts"
+    "pages/**/*",
+    "locators/**/*",
+    "data/**/*",
+    "scripts/**/*",
+    "playwright.config.ts"
   ],
   "exclude": [
     "node_modules",
     "test-results",
-    "playwright-report"
+    "playwright-report",
+    "coverage"
   ]
 } 

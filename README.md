@@ -1,5 +1,11 @@
 # Playwright Automation Project
 
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Playwright](https://img.shields.io/badge/Playwright-1.53+-blue.svg)](https://playwright.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
+[![ESLint](https://img.shields.io/badge/ESLint-8.57+-yellow.svg)](https://eslint.org/)
+[![License](https://img.shields.io/badge/License-ISC-green.svg)](LICENSE)
+
 A comprehensive Playwright automation testing project with best practices, TypeScript support, and modern testing patterns.
 
 ## 🚀 Features
@@ -11,6 +17,8 @@ A comprehensive Playwright automation testing project with best practices, TypeS
 - **CI/CD Ready**: Optimized for continuous integration
 - **ESLint Integration**: Code quality and consistency
 - **Utility Functions**: Reusable test helpers and utilities
+- **Code Coverage**: Integrated coverage reporting with c8
+- **Validation Scripts**: Automated checks for locators, naming conventions, and console logs
 
 ## 📋 Prerequisites
 
@@ -60,25 +68,31 @@ npm run test:trace
 
 # Show test report
 npm run test:report
+
+# Run tests with coverage
+npm run test:coverage
 ```
 
 ### Advanced Commands
 
 ```bash
+# Run specific browser tests
+npm run test:chromium
+npm run test:firefox
+npm run test:webkit
+npm run test:mobile
+
+# Run tests in parallel
+npm run test:parallel
+
+# Run tests with sharding (for CI)
+npm run test:shard
+
 # Run specific test file
-npx playwright test tests/login.spec.ts
+npx playwright test tests/e2e/login.spec.ts
 
 # Run specific test by name
 npx playwright test -g "should successfully login"
-
-# Run tests on specific browser
-npx playwright test --project=chromium
-
-# Run tests in parallel
-npx playwright test --workers=4
-
-# Run tests with sharding (for CI)
-npx playwright test --shard=1/3
 ```
 
 ## 📁 Project Structure
@@ -86,12 +100,29 @@ npx playwright test --shard=1/3
 ```
 playwright_automation/
 ├── tests/                    # Test files
-│   └── login.spec.ts        # Login functionality tests
+│   ├── e2e/                 # End-to-end tests
+│   │   └── login.spec.ts    # Login functionality tests
+│   ├── integration/         # Integration tests
+│   └── unit/               # Unit tests
 ├── pages/                   # Page Object Models
 │   └── LoginPage.ts         # Login page POM
 ├── utils/                   # Utility functions
 │   └── test-helpers.ts      # Common test helpers
-├── playwright.config.js     # Playwright configuration
+├── locators/                # Centralized locators
+│   └── index.js            # All test selectors
+├── data/                    # Test data
+│   └── test-data.ts        # Test data and fixtures
+├── scripts/                 # Validation scripts
+│   ├── validate-locators.js
+│   ├── validate-naming-conventions.js
+│   └── validate-console-clean.js
+├── docs/                    # Documentation
+│   ├── architecture-overview.md
+│   ├── test-architecture.md
+│   └── workflows-overview.md
+├── .github/workflows/       # CI/CD workflows
+│   └── ci.yml              # Main CI workflow
+├── playwright.config.ts     # Playwright configuration
 ├── tsconfig.json           # TypeScript configuration
 ├── .eslintrc.json          # ESLint configuration
 ├── package.json            # Project dependencies
@@ -113,6 +144,15 @@ test('login test', async ({ page }) => {
 });
 ```
 
+### Centralized Locators
+All selectors are centralized in `locators/index.js` for better maintenance:
+
+```typescript
+import { LOGIN_LOCATORS } from '../locators';
+
+await page.locator(LOGIN_LOCATORS.EMAIL_INPUT).fill('user@example.com');
+```
+
 ### Test Helpers
 Common utility functions for test operations:
 
@@ -126,16 +166,17 @@ await TestHelpers.takeScreenshot(page, 'login-success');
 ## 🔧 Configuration
 
 ### Playwright Config
-- **Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari, Edge, Chrome
+- **Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari, Edge
 - **Reporting**: HTML, JSON, and JUnit reports
 - **Screenshots**: On failure only
 - **Videos**: Retained on failure
 - **Traces**: On first retry
+- **Test ID Attribute**: Configured for `data-testid`
 
 ### TypeScript Config
 - **Target**: ES2022
 - **Module**: ESNext
-- **Strict**: Enabled
+- **Strict**: Enabled with additional strict options
 - **Path Mapping**: Configured for better imports
 
 ### ESLint Config
@@ -143,7 +184,7 @@ await TestHelpers.takeScreenshot(page, 'login-success');
 - **Playwright**: Specific rules for async operations
 - **Best Practices**: Enforced coding standards
 
-## 📊 Test Reports
+## 📊 Test Reports & Coverage
 
 After running tests, view reports:
 
@@ -151,8 +192,8 @@ After running tests, view reports:
 # Open HTML report
 npm run test:report
 
-# Or directly
-npx playwright show-report
+# Run with coverage
+npm run test:coverage
 ```
 
 Reports include:
@@ -160,24 +201,39 @@ Reports include:
 - Screenshots on failure
 - Video recordings
 - Trace files for debugging
+- Code coverage metrics
+
+## 🔍 Validation Scripts
+
+The project includes automated validation scripts:
+
+```bash
+# Validate all
+npm run validate:all
+
+# Individual validations
+npm run validate:locators      # Check for duplicate locators
+npm run validate:naming        # Check naming conventions
+npm run validate:console       # Check for console statements
+```
 
 ## 🚀 CI/CD Integration
 
 ### GitHub Actions
-The project includes a GitHub Actions workflow (`.github/workflows/playwright.yml`) that:
+The project includes a unified GitHub Actions workflow (`.github/workflows/ci.yml`) that:
 
-1. Runs tests on every push and PR
-2. Installs dependencies and browsers
-3. Executes tests in parallel
-4. Uploads test reports as artifacts
+1. Runs linting and validation
+2. Executes tests across multiple browsers
+3. Generates coverage reports
+4. Uploads test artifacts
 
 ### Local CI Setup
 ```bash
-# Install only required browsers for CI
-npx playwright install chromium --with-deps
-
-# Run tests with CI optimizations
-npx playwright test --reporter=html,junit
+# Run CI commands locally
+npm run ci:lint
+npm run ci:validate
+npm run ci:test
+npm run ci:coverage
 ```
 
 ## 🐛 Debugging
@@ -197,47 +253,33 @@ npm run test:debug
 ```bash
 # Record traces
 npm run test:trace
-
-# View traces
-npx playwright show-report
 ```
 
-## 📝 Best Practices
+## 🧹 Maintenance
 
-### Test Organization
-- Use descriptive test names
-- Group related tests with `test.describe()`
-- Use `test.beforeEach()` for setup
-- Keep tests independent
+### Cleaning
+```bash
+# Clean test artifacts
+npm run clean
 
-### Selectors
-- Prefer `data-testid` attributes
-- Use semantic selectors (role, text)
-- Avoid CSS selectors when possible
-- Make selectors resilient to UI changes
+# Clean everything (including node_modules)
+npm run clean:all
+```
 
-### Assertions
-- Use web-first assertions
-- Add meaningful error messages
-- Use soft assertions when appropriate
-- Verify both positive and negative cases
+## 📚 Documentation
 
-### Performance
-- Use `waitForLoadState()` for page loads
-- Implement proper timeouts
-- Use parallel execution when possible
-- Optimize browser installations for CI
+- [Architecture Overview](docs/architecture-overview.md)
+- [Test Architecture](docs/test-architecture.md)
+- [Workflows Overview](docs/workflows-overview.md)
 
 ## 🤝 Contributing
 
-1. Follow the existing code style
-2. Add tests for new features
-3. Update documentation
-4. Run linting and type checking:
-   ```bash
-   npm run lint
-   npm run type-check
-   ```
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run validation scripts: `npm run validate:all`
+5. Run tests: `npm test`
+6. Submit a pull request
 
 ## 📄 License
 

@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { LOGIN_LOCATORS } from '../locators/index.js';
+import { LOGIN_LOCATORS } from '../../locators/index.js';
 import {
   BASE_URLS,
   LOGIN_TEST_DATA,
-} from '../data/test-data.js';
+} from '../../data/test-data.js';
 
 test.describe('Login Functionality', () => {
   const baseUrl = BASE_URLS.MAIN_APP;
