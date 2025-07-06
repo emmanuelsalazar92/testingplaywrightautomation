@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+/* eslint-disable no-console, @typescript-eslint/no-explicit-any, max-len */
 
 import fs from 'fs';
 import path from 'path';
@@ -25,8 +26,9 @@ function getSourceFiles(dir: string, extensions: string[]): string[] {
         files.push(fullPath);
       }
     }
-  } catch (error: any) {
-    console.warn(`⚠️  Warning: Could not scan directory ${dir}: ${error.message}`);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.warn(`⚠️  Warning: Could not scan directory ${dir}: ${errorMessage}`);
   }
   return files;
 }
@@ -41,8 +43,9 @@ function checkForConsoleStatements(filePath: string): string[] {
         issues.push(`${filePath}:${idx + 1}: ${line.trim()}`);
       }
     });
-  } catch (error: any) {
-    console.warn(`⚠️  Warning: Could not read file ${filePath}: ${error.message}`);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.warn(`⚠️  Warning: Could not read file ${filePath}: ${errorMessage}`);
   }
   return issues;
 }
@@ -74,8 +77,9 @@ function validateConsoleClean(): boolean {
           hasIssues = true;
           console.log(`❌ Console statement found in test result: ${file}`);
         }
-      } catch (error: any) {
-        console.warn(`⚠️  Warning: Could not read result file ${file}: ${error.message}`);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn(`⚠️  Warning: Could not read result file '${file}': ${errorMessage}`);
       }
     }
   }

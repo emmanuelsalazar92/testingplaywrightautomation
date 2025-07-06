@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+/* eslint-disable no-console, @typescript-eslint/no-explicit-any, max-len */
 
 import fs from 'fs';
 import path from 'path';
