@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LOGIN_LOCATORS } from '../../locators/index.js';
+import { LoginPage } from '../../pages/LoginPage';
 import {
   BASE_URLS,
   LOGIN_TEST_DATA,

@@ -79,7 +79,7 @@ function validateConsoleClean(): boolean {
         }
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        console.warn(`⚠️  Warning: Could not read result file '${file}': ${errorMessage}`);
+        console.warn(`⚠️  Warning: Could not read result file ${file}: ${errorMessage}`);
       }
     }
   }
