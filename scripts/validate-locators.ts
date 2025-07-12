@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const LOCATORS_FILE_PATH = path.join(__dirname, '..', 'locators', 'index.js');
+const LOCATORS_FILE_PATH = path.join(__dirname, '..', 'locators', 'index.ts');
 const TEST_DATA_FILE_PATH = path.join(__dirname, '..', 'data', 'test-data.ts');
 
 /**
