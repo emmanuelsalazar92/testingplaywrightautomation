@@ -32,6 +32,7 @@ export const DASHBOARD_LOCATORS = {
   WELCOME_MESSAGE: '[data-testid="welcome-message"]',
   USER_PROFILE: '[data-testid="user-profile"]',
   DASHBOARD_STATS: '[data-testid="dashboard-stats"]',
+  DASHBOARD_TITLE: '[data-testid="dashboard-title"]',
 };
 
 // Common UI Elements
