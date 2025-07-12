@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { LOGIN_LOCATORS } from '../locators/index.js';
-import { BASE_URLS, LOGIN_TEST_DATA } from '../data/test-data.js';
+import { LOGIN_LOCATORS } from '../locators/index';
+import { BASE_URLS, LOGIN_TEST_DATA } from '../data/test-data';
 
 /**
  * Page Object Model for Login Page

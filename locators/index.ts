@@ -20,7 +20,7 @@ export const LOGIN_LOCATORS = {
   REMEMBER_ME_CHECKBOX: '[data-testid="remember-me-checkbox"]',
   LOGIN_FORM: '[data-testid="login-form"]',
   VALIDATION_ERROR: '[data-testid="validation-error"]',
-};
+} as const;
 
 // Dashboard Page Locators
 export const DASHBOARD_LOCATORS = {
@@ -33,7 +33,7 @@ export const DASHBOARD_LOCATORS = {
   USER_PROFILE: '[data-testid="user-profile"]',
   DASHBOARD_STATS: '[data-testid="dashboard-stats"]',
   DASHBOARD_TITLE: '[data-testid="dashboard-title"]',
-};
+} as const;
 
 // Common UI Elements
 export const COMMON_LOCATORS = {
@@ -46,7 +46,7 @@ export const COMMON_LOCATORS = {
   SUCCESS_ALERT: '[data-testid="success-alert"]',
   ERROR_ALERT: '[data-testid="error-alert"]',
   WARNING_ALERT: '[data-testid="warning-alert"]',
-};
+} as const;
 
 // Form Elements
 export const FORM_LOCATORS = {
@@ -57,7 +57,7 @@ export const FORM_LOCATORS = {
   FORM_CONTAINER: '[data-testid="form-container"]',
   REQUIRED_FIELD_INDICATOR: '[data-testid="required-field"]',
   FIELD_HELP_TEXT: '[data-testid="field-help-text"]',
-};
+} as const;
 
 // Navigation Elements
 export const NAVIGATION_LOCATORS = {
@@ -68,7 +68,7 @@ export const NAVIGATION_LOCATORS = {
   NAVIGATION_MENU: '[data-testid="navigation-menu"]',
   BURGER_MENU: '[data-testid="burger-menu"]',
   MOBILE_MENU: '[data-testid="mobile-menu"]',
-};
+} as const;
 
 // Registration Page Locators
 export const REGISTRATION_LOCATORS = {
@@ -81,7 +81,7 @@ export const REGISTRATION_LOCATORS = {
   TERMS_CHECKBOX: '[data-testid="terms-checkbox"]',
   PRIVACY_CHECKBOX: '[data-testid="privacy-checkbox"]',
   REGISTRATION_FORM: '[data-testid="registration-form"]',
-};
+} as const;
 
 // Profile Page Locators
 export const PROFILE_LOCATORS = {
@@ -92,7 +92,7 @@ export const PROFILE_LOCATORS = {
   PROFILE_INFO: '[data-testid="profile-info"]',
   CHANGE_PASSWORD_LINK: '[data-testid="change-password-link"]',
   DELETE_ACCOUNT_BUTTON: '[data-testid="delete-account-button"]',
-};
+} as const;
 
 // Settings Page Locators
 export const SETTINGS_LOCATORS = {
@@ -104,7 +104,7 @@ export const SETTINGS_LOCATORS = {
   LANGUAGE_SELECTOR: '[data-testid="language-selector"]',
   THEME_SELECTOR: '[data-testid="theme-selector"]',
   SAVE_SETTINGS_BUTTON: '[data-testid="save-settings-button"]',
-};
+} as const;
 
 // All locators combined for validation
 export const ALL_LOCATORS = {
@@ -116,7 +116,7 @@ export const ALL_LOCATORS = {
   ...REGISTRATION_LOCATORS,
   ...PROFILE_LOCATORS,
   ...SETTINGS_LOCATORS,
-};
+} as const;
 
 // Locator categories for organization
 export const LOCATOR_CATEGORIES = {
@@ -128,7 +128,7 @@ export const LOCATOR_CATEGORIES = {
   REGISTRATION: REGISTRATION_LOCATORS,
   PROFILE: PROFILE_LOCATORS,
   SETTINGS: SETTINGS_LOCATORS,
-};
+} as const;
 
 // Legacy selectors (for backward compatibility)
 export const SELECTORS = {
@@ -136,6 +136,6 @@ export const SELECTORS = {
   PASSWORD_INPUT: LOGIN_LOCATORS.PASSWORD_INPUT,
   LOGIN_BUTTON: LOGIN_LOCATORS.LOGIN_BUTTON,
   APP_HEADING: DASHBOARD_LOCATORS.APP_HEADING,
-};
+} as const;
 
 export default ALL_LOCATORS; 

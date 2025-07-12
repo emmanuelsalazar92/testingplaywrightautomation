@@ -1,0 +1,35 @@
+{
+  "folders": [
+    {
+      "name": "Playwright Automation",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.suggest.autoImports": true,
+    "files.associations": {
+      "*.spec.ts": "typescript",
+      "*.test.ts": "typescript"
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/test-results": true,
+      "**/playwright-report": true,
+      "**/coverage": true
+    },
+    "files.exclude": {
+      "**/test-results": true,
+      "**/playwright-report": true,
+      "**/coverage": true
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-playwright.playwright",
+      "ms-vscode.vscode-typescript-next"
+    ]
+  }
+} 
