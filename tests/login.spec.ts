@@ -1,34 +1,27 @@
 import { test, expect } from '@playwright/test';
-import { LOGIN_LOCATORS } from '../../locators/index.js';
-import { LoginPage } from '../../pages/LoginPage';
-import {
-  BASE_URLS,
-  LOGIN_TEST_DATA,
-} from '../../data/test-data.js';
+import { DASHBOARD_LOCATORS, LOGIN_LOCATORS } from '../locators/index.js';
+import { LoginPage } from '../pages/LoginPage.js';
+import { BASE_URLS, LOGIN_TEST_DATA } from '../data/test-data.js';
 
 test.describe('Login Functionality', () => {
   const baseUrl = BASE_URLS.MAIN_APP;
   const loginUrl = `${baseUrl}/login`;
+  let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {
     // Navigate to login page before each test
-    await page.goto(loginUrl);
+    //await page.goto(loginUrl);
+    loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.waitForPageLoad();
   });
 
-  test('should successfully login with valid credentials', async ({ page }) => {
-    // Fill in login form using centralized locators and test data
-    await page
-      .locator(LOGIN_LOCATORS.EMAIL_INPUT)
-      .fill(LOGIN_TEST_DATA.VALID_EMAIL);
-    await page
-      .locator(LOGIN_LOCATORS.PASSWORD_INPUT)
-      .fill(LOGIN_TEST_DATA.VALID_PASSWORD);
-
-    // Submit the form
-    await page.locator(LOGIN_LOCATORS.LOGIN_BUTTON).click();
-
-    // Additional verification - check if we're redirected to the main page
-    await expect(page).toHaveURL(new RegExp(`${baseUrl}/.*`));
+  test('Should successfully login with valid credentials', async ({ page }) => {
+    await loginPage.expectLoginFormVisible();
+    await loginPage.loginWithValidCredentials();
+    await expect(page).toHaveTitle('UI Automation Practice App');
+    await expect(page.locator(DASHBOARD_LOCATORS.DASHBOARD_TITLE)).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`${BASE_URLS.MAIN_APP}/.*`));
   });
 
   test('should show error with invalid credentials', async ({ page }) => {
