@@ -24,7 +24,6 @@ export const LOGIN_LOCATORS = {
 
 // Dashboard Page Locators
 export const DASHBOARD_LOCATORS = {
-  APP_HEADING: 'h1:has-text("UI Test App")',
   USER_MENU: '[data-testid="user-menu"]',
   LOGOUT_BUTTON: '[data-testid="logout-button"]',
   SIDEBAR_NAV: '[data-testid="sidebar-navigation"]',

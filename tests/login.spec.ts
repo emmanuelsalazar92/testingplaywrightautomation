@@ -1,27 +1,40 @@
 import { test, expect } from '@playwright/test';
-import { DASHBOARD_LOCATORS, LOGIN_LOCATORS } from '../locators/index';
+import { LOGIN_LOCATORS } from '../locators/index';
 import { LoginPage } from '../pages/LoginPage';
+import { DashboardPage } from '../pages/DashboardPage';
 import { BASE_URLS, LOGIN_TEST_DATA } from '../data/test-data';
 
 test.describe('Login Functionality', () => {
   const baseUrl = BASE_URLS.MAIN_APP;
   const loginUrl = `${baseUrl}/login`;
   let loginPage: LoginPage;
+  let dashboardPage: DashboardPage;
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to login page before each test
-    //await page.goto(loginUrl);
     loginPage = new LoginPage(page);
-    await loginPage.goto();
-    await loginPage.waitForPageLoad();
+
+    await test.step('Navigate to Login Page', async () => {
+      await page.context().clearCookies();
+      await loginPage.goto();
+      await loginPage.expectOnLoginPage();
+      await loginPage.expectLoginFormVisible();
+    });
   });
 
-  test('Should successfully login with valid credentials', async ({ page }) => {
-    await loginPage.expectLoginFormVisible();
-    await loginPage.loginWithValidCredentials();
-    await expect(page).toHaveTitle('UI Automation Practice App');
-    await expect(page.locator(DASHBOARD_LOCATORS.DASHBOARD_TITLE)).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(`${BASE_URLS.MAIN_APP}/.*`));
+  test('TC-001 Should allow login with valid credentials', async ({ page }) => {
+    await test.step('Enter valid credentials and submit', async () => {
+      await loginPage.fillEmail(LOGIN_TEST_DATA.VALID_EMAIL);
+      await loginPage.fillPassword(LOGIN_TEST_DATA.VALID_PASSWORD);
+      await loginPage.clickLogin();
+
+    });
+
+    await test.step('Verify successful login and redirect', async () => {
+      dashboardPage = new DashboardPage(page);
+      await dashboardPage.expectOnDashboardPage();
+      await dashboardPage.expectDashboardTitleVisible(); 
+      await dashboardPage.expectTitleVisible();
+    });
   });
 
   test('should show error with invalid credentials', async ({ page }) => {

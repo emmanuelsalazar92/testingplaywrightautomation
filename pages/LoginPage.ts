@@ -122,13 +122,6 @@ export class LoginPage {
   }
 
   /**
-   * Wait for page to load
-   */
-  async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  /**
    * Get current URL
    */
   async getCurrentUrl(): Promise<string> {
