@@ -1,6 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { LOGIN_LOCATORS } from '../locators/index';
 import { BASE_URLS, LOGIN_TEST_DATA } from '../data/test-data';
+import { getLocator } from '../utils/test-helpers';
 
 /**
  * Page Object Model for Login Page
@@ -19,18 +20,24 @@ export class LoginPage {
   readonly rememberMeCheckbox: Locator;
   readonly loginForm: Locator;
   readonly validationError: Locator;
+  readonly firstAttemptLabel: Locator;
+  readonly toastMessage: Locator;
+  readonly blockedUser: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator(LOGIN_LOCATORS.EMAIL_INPUT);
-    this.passwordInput = page.locator(LOGIN_LOCATORS.PASSWORD_INPUT);
-    this.loginButton = page.locator(LOGIN_LOCATORS.LOGIN_BUTTON);
-    this.errorMessage = page.locator(LOGIN_LOCATORS.ERROR_MESSAGE);
-    this.successMessage = page.locator(LOGIN_LOCATORS.SUCCESS_MESSAGE);
-    this.forgotPasswordLink = page.locator(LOGIN_LOCATORS.FORGOT_PASSWORD_LINK);
-    this.rememberMeCheckbox = page.locator(LOGIN_LOCATORS.REMEMBER_ME_CHECKBOX);
-    this.loginForm = page.locator(LOGIN_LOCATORS.LOGIN_FORM);
-    this.validationError = page.locator(LOGIN_LOCATORS.VALIDATION_ERROR);
+    this.emailInput = getLocator(page, LOGIN_LOCATORS.EMAIL_INPUT);
+    this.passwordInput = getLocator(page, LOGIN_LOCATORS.PASSWORD_INPUT);
+    this.loginButton = getLocator(page, LOGIN_LOCATORS.LOGIN_BUTTON);
+    this.errorMessage = getLocator(page, LOGIN_LOCATORS.ERROR_MESSAGE);
+    this.successMessage = getLocator(page, LOGIN_LOCATORS.SUCCESS_MESSAGE);
+    this.forgotPasswordLink = getLocator(page, LOGIN_LOCATORS.FORGOT_PASSWORD_LINK);
+    this.rememberMeCheckbox = getLocator(page, LOGIN_LOCATORS.REMEMBER_ME_CHECKBOX);
+    this.loginForm = getLocator(page, LOGIN_LOCATORS.LOGIN_FORM);
+    this.validationError = getLocator(page, LOGIN_LOCATORS.VALIDATION_ERROR);
+    this.firstAttemptLabel = getLocator(page, LOGIN_LOCATORS.FIRST_ATTEMPT_LABEL);
+    this.toastMessage = getLocator(page, LOGIN_LOCATORS.TOAST_MESSAGE);
+    this.blockedUser = getLocator(page, LOGIN_LOCATORS.BLOCKED_USER);
   }
 
   /**
@@ -59,6 +66,13 @@ export class LoginPage {
    */
   async clickLogin(): Promise<void> {
     await this.loginButton.click();
+  }
+
+  /**
+   * Disabled login button
+   */
+  async expectDisabledLoginButton(): Promise<void> {
+    await expect(this.loginButton).toBeDisabled();
   }
 
   /**
@@ -92,6 +106,14 @@ export class LoginPage {
   }
 
   /**
+   * Check if blocked user message is visible
+   */
+  async expectBlockedUserMessage(): Promise<void> {
+    await expect(this.blockedUser).toBeVisible();
+    await expect(this.blockedUser).toHaveText('Usuario bloqueado después de 3 intentos fallidos');
+  }
+
+  /**
    * Check if specific error message is visible
    */
   async expectSpecificErrorMessage(message: string): Promise<void> {
@@ -99,10 +121,17 @@ export class LoginPage {
   }
 
   /**
+   * Check if toast message is visible
+   */
+  async expectToastMessage(): Promise<void> {
+    await expect(this.toastMessage).toBeVisible();
+  }
+
+  /**
    * Check if success message is visible
    */
-  async expectSuccessMessage(): Promise<void> {
-    await expect(this.successMessage).toBeVisible();
+  async expectFirstAttemptMessage(): Promise<void> {
+    await expect(this.firstAttemptLabel).toBeVisible();
   }
 
   /**

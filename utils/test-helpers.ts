@@ -131,3 +131,27 @@ export class TestHelpers {
     await field.fill(value);
   }
 }
+
+/**
+ * Devuelve un Locator de Playwright a partir de un string o un objeto { type, value }
+ * type puede ser: 'testid', 'text', 'xpath', 'css'.
+ * Si es string, se asume CSS selector (compatibilidad).
+ */
+export function getLocator(page: Page, locator: string | { type: string, value: string }) {
+  if (typeof locator === 'string') {
+    // Compatibilidad: asume CSS selector
+    return page.locator(locator);
+  }
+  switch (locator.type) {
+    case 'testid':
+      return page.locator(`[data-testid="${locator.value}"]`);
+    case 'text':
+      return page.getByText(locator.value);
+    case 'xpath':
+      return page.locator(`xpath=${locator.value}`);
+    case 'css':
+      return page.locator(locator.value);
+    default:
+      throw new Error(`Unknown locator type: ${locator.type}`);
+  }
+}
