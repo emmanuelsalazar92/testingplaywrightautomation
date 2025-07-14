@@ -14,17 +14,6 @@ export class TestHelpers {
   static async waitForPageLoad(page: Page): Promise<void> {
     await page.waitForLoadState('networkidle');
   }
-
-  /**
-	 * Take a screenshot with timestamp
-	 */
-  static async takeScreenshot(page: Page, name: string): Promise<void> {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    await page.screenshot({
-      path: `test-results/screenshots/${name}-${timestamp}.png`,
-      fullPage: true,
-    });
-  }
 }
 
 /**
@@ -33,10 +22,6 @@ export class TestHelpers {
  * Si es string, se asume CSS selector (compatibilidad).
  */
 export function getLocator(page: any, locator: any) {
-  if (typeof locator === 'string') {
-    // Compatibilidad: asume CSS selector
-    return page.locator(locator);
-  }
   switch (locator.type) {
   case 'testid':
     return page.locator(`[data-testid="${locator.value}"]`);

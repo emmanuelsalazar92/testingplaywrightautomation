@@ -110,32 +110,11 @@ export class LoginPage {
   }
 
   /**
-   * Check if error message is visible
-   */
-  async expectErrorMessage(): Promise<void> {
-    await expect(this.errorMessage).toBeVisible();
-  }
-
-  /**
    * Check if blocked user message is visible
    */
   async expectBlockedUserMessage(): Promise<void> {
     await expect(this.blockedUser).toBeVisible();
     await expect(this.blockedUser).toHaveText('Usuario bloqueado después de 3 intentos fallidos');
-  }
-
-  /**
-   * Check if specific error message is visible
-   */
-  async expectSpecificErrorMessage(message: string): Promise<void> {
-    await expect(this.page.getByText(message)).toBeVisible();
-  }
-
-  /**
-   * Check if toast message is visible
-   */
-  async expectToastMessage(): Promise<void> {
-    await expect(this.toastMessage).toBeVisible();
   }
 
   /**
@@ -159,83 +138,5 @@ export class LoginPage {
    */
   async expectOnLoginPage(): Promise<void> {
     await expect(this.page).toHaveURL(new RegExp(`${BASE_URLS.MAIN_APP}/login`));
-  }
-
-  /**
-   * Get current URL
-   */
-  async getCurrentUrl(): Promise<string> {
-    return this.page.url();
-  }
-
-  /**
-   * Clear email field
-   */
-  async clearEmail(): Promise<void> {
-    await this.emailInput.clear();
-  }
-
-  /**
-   * Clear password field
-   */
-  async clearPassword(): Promise<void> {
-    await this.passwordInput.clear();
-  }
-
-  /**
-   * Clear all form fields
-   */
-  async clearForm(): Promise<void> {
-    await this.clearEmail();
-    await this.clearPassword();
-  }
-
-  /**
-   * Check if email field is empty
-   */
-  async expectEmailEmpty(): Promise<void> {
-    await expect(this.emailInput).toHaveValue('');
-  }
-
-  /**
-   * Check if password field is empty
-   */
-  async expectPasswordEmpty(): Promise<void> {
-    await expect(this.passwordInput).toHaveValue('');
-  }
-
-  /**
-   * Check if remember me checkbox is checked
-   */
-  async expectRememberMeChecked(): Promise<void> {
-    await expect(this.rememberMeCheckbox).toBeChecked();
-  }
-
-  /**
-   * Check if remember me checkbox is unchecked
-   */
-  async expectRememberMeUnchecked(): Promise<void> {
-    await expect(this.rememberMeCheckbox).not.toBeChecked();
-  }
-
-  /**
-   * Toggle remember me checkbox
-   */
-  async toggleRememberMe(): Promise<void> {
-    await this.rememberMeCheckbox.click();
-  }
-
-  /**
-   * Click forgot password link
-   */
-  async clickForgotPassword(): Promise<void> {
-    await this.forgotPasswordLink.click();
-  }
-
-  /**
-   * Check if forgot password link is visible
-   */
-  async expectForgotPasswordLinkVisible(): Promise<void> {
-    await expect(this.forgotPasswordLink).toBeVisible();
   }
 } 
