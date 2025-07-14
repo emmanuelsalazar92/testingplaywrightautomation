@@ -23,6 +23,8 @@ export const LOGIN_LOCATORS = {
   FIRST_ATTEMPT_LABEL: { type: 'text', value: 'Intentos: 1/' },
   TOAST_MESSAGE: { type: 'testid', value: 'toast-message' },
   BLOCKED_USER: { type: 'testid', value: 'blocked-message' },
+  EMAIL_ERROR_MESSAGE: { type: 'testid', value: 'email-error' },
+  PASSWORD_ERROR_MESSAGE: { type: 'testid', value: 'password-error' },
 } as const;
 
 // Dashboard Page Locators

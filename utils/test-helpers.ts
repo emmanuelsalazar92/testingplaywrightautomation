@@ -27,75 +27,11 @@ export class TestHelpers {
   }
 
   /**
-	 * Fill form fields with validation
-	 */
-  static async fillFormField(
-    page: Page,
-    selector: string,
-    value: string,
-  ): Promise<void> {
-    const field = page.locator(selector);
-    await field.waitFor({ state: 'visible' });
-    await field.fill(value);
-  }
-
-  /**
-	 * Click element with retry logic
-	 */
-  static async clickWithRetry(
-    page: Page,
-    selector: string,
-    maxRetries = 3,
-  ): Promise<void> {
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        const element = page.locator(selector);
-        await element.waitFor({ state: 'visible' });
-        await element.click();
-        return;
-      } catch (error) {
-        if (i === maxRetries - 1) throw error;
-        await page.waitForTimeout(1000);
-      }
-    }
-  }
-
-  /**
-	 * Verify element is visible with timeout
-	 */
-  static async expectVisible(
-    page: Page,
-    selector: string,
-    timeout = 10000,
-  ): Promise<void> {
-    const element = page.locator(selector);
-    await element.waitFor({ state: 'visible', timeout });
-    await expect(element).toBeVisible();
-  }
-
-  /**
 	 * Generate random test data
 	 */
   static generateRandomEmail(): string {
     const timestamp = Date.now();
     return `test-${timestamp}@example.com`;
-  }
-
-  static generateRandomString(length = 8): string {
-    const chars =
-			'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  }
-
-  /**
-	 * Wait for network requests to complete
-	 */
-  static async waitForNetworkIdle(page: Page, timeout = 30000): Promise<void> {
-    await page.waitForLoadState('networkidle', { timeout });
   }
 
   /**
@@ -108,29 +44,6 @@ export class TestHelpers {
   ): Promise<void> {
     await page.waitForURL(urlPattern, { timeout });
   }
-
-  /**
-	 * Scroll element into view
-	 */
-  static async scrollIntoView(page: Page, selector: string): Promise<void> {
-    const element = page.locator(selector);
-    await element.scrollIntoViewIfNeeded();
-  }
-
-  /**
-	 * Clear and fill input field
-	 */
-  static async clearAndFill(
-    page: Page,
-    selector: string,
-    value: string,
-  ): Promise<void> {
-    const field = page.locator(selector);
-    await field.waitFor({ state: 'visible' });
-    await field.clear();
-    await field.fill(value);
-  }
-}
 
 /**
  * Devuelve un Locator de Playwright a partir de un string o un objeto { type, value }

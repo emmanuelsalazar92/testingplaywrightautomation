@@ -23,6 +23,8 @@ export class LoginPage {
   readonly firstAttemptLabel: Locator;
   readonly toastMessage: Locator;
   readonly blockedUser: Locator;
+  readonly emailErrorMessage: Locator;
+  readonly passwordErrorMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -38,6 +40,8 @@ export class LoginPage {
     this.firstAttemptLabel = getLocator(page, LOGIN_LOCATORS.FIRST_ATTEMPT_LABEL);
     this.toastMessage = getLocator(page, LOGIN_LOCATORS.TOAST_MESSAGE);
     this.blockedUser = getLocator(page, LOGIN_LOCATORS.BLOCKED_USER);
+    this.emailErrorMessage = getLocator(page, LOGIN_LOCATORS.EMAIL_ERROR_MESSAGE);
+    this.passwordErrorMessage = getLocator(page, LOGIN_LOCATORS.PASSWORD_ERROR_MESSAGE);
   }
 
   /**
@@ -73,6 +77,20 @@ export class LoginPage {
    */
   async expectDisabledLoginButton(): Promise<void> {
     await expect(this.loginButton).toBeDisabled();
+  }
+
+  /**
+   * Expect email error message to be visible
+   */
+  async expectEmailErrorMessageVisible(): Promise<void> {
+    await expect(this.emailErrorMessage).toBeVisible();
+  }
+
+  /**
+   * Expect password error message to be visible
+   */
+  async expectPasswordErrorMessageVisible(): Promise<void> {
+    await expect(this.passwordErrorMessage).toBeVisible();
   }
 
   /**
