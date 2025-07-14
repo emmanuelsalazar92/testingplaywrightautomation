@@ -12,37 +12,38 @@ const LOCATORS_FILE_PATH = path.join(__dirname, '..', 'locators', 'index.ts');
 const TEST_DATA_FILE_PATH = path.join(__dirname, '..', 'data', 'test-data.ts');
 
 /**
- * Extract locator values from the locators file
- * @returns Object with full locator name as key and value as value
+ * Extrae los valores de los locators desde el archivo locators/index.ts
+ * Soporta la estructura: { type: 'testid', value: '...' } o { type: 'text', value: '...' }
+ * Retorna un objeto con el nombre completo del locator como clave y el selector como valor
  */
 function extractLocators(): Record<string, string> {
   try {
     const fileContent = fs.readFileSync(LOCATORS_FILE_PATH, 'utf8');
     const locators: Record<string, string> = {};
     // Regex para encontrar todos los objetos exportados (incluyendo los que están en múltiples líneas)
-    const objectRegex = /export\s+const\s+([A-Z0-9_]+)\s*=\s*\{([\s\S]*?)\};/gs;
+    const objectRegex = /export\s+const\s+([A-Z0-9_]+)\s*=\s*\{([\s\S]*?)\}\s*as const;/gs;
     let objectMatch: RegExpExecArray | null;
     while ((objectMatch = objectRegex.exec(fileContent)) !== null) {
       const objectName = objectMatch[1];
       const objectBody = objectMatch[2];
-      // Regex para encontrar todas las propiedades tipo: EMAIL_INPUT: '[selector]',
-      // Captura desde los dos puntos hasta la coma, incluyendo las comillas
-      const propRegex = /([A-Z0-9_]+):\s*([^,]+),?/g;
+      // Regex para encontrar propiedades tipo: EMAIL_INPUT: { type: 'testid', value: 'email-input' },
+      const propRegex = /([A-Z0-9_]+):\s*\{\s*type:\s*['"]([a-zA-Z0-9_]+)['"],\s*value:\s*['"]([^'"]+)['"]\s*\}/g;
       let propMatch: RegExpExecArray | null;
       while ((propMatch = propRegex.exec(objectBody)) !== null) {
         const prop = propMatch[1];
-        let value = propMatch[2].trim();
-        // Remover comillas del inicio y final si existen
-        if ((value.startsWith("'") && value.endsWith("'")) || 
-            (value.startsWith('"') && value.endsWith('"')) ||
-            (value.startsWith('`') && value.endsWith('`'))) {
-          value = value.slice(1, -1);
+        const type = propMatch[2];
+        const value = propMatch[3];
+        let selector = '';
+        if (type === 'testid') {
+          selector = `[data-testid="${value}"]`;
+        } else if (type === 'text') {
+          selector = `text=${value}`;
+        } else {
+          // Si hay otros tipos, puedes agregar lógica aquí
+          continue;
         }
-        // Solo agregar si es un selector con data-testid
-        if (value && value.includes('data-testid=')) {
-          const fullName = `${objectName}.${prop}`;
-          locators[fullName] = value;
-        }
+        const fullName = `${objectName}.${prop}`;
+        locators[fullName] = selector;
       }
     }
     return locators;
@@ -74,7 +75,7 @@ function checkForHardcodedSelectors(): Array<{ type: string; value: string; file
               type: 'hardcoded_selector',
               value: match,
               file: 'data/test-data.ts',
-              recommendation: 'Move selector to locators/index.js',
+              recommendation: 'Move selector to locators/index.ts',
             });
           });
         }
@@ -155,7 +156,7 @@ function validateLocators(): boolean {
   console.log('   - Ensure each locator has a unique purpose');
   console.log('   - Consider using more specific selectors');
   console.log('   - Update tests to use the correct locator names');
-  console.log('   - Move any hardcoded selectors to locators/index.js');
+  console.log('   - Move any hardcoded selectors to locators/index.ts');
   return false;
 }
 
