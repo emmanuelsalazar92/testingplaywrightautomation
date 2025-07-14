@@ -1,6 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { LOGIN_LOCATORS } from '../locators/index';
 import { BASE_URLS, LOGIN_TEST_DATA } from '../data/test-data';
+import { getLocator } from '../utils/test-helpers';
 
 /**
  * Page Object Model for Login Page
@@ -13,24 +14,20 @@ export class LoginPage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
-  readonly errorMessage: Locator;
-  readonly successMessage: Locator;
-  readonly forgotPasswordLink: Locator;
-  readonly rememberMeCheckbox: Locator;
-  readonly loginForm: Locator;
-  readonly validationError: Locator;
+  readonly firstAttemptLabel: Locator;
+  readonly blockedUser: Locator;
+  readonly emailErrorMessage: Locator;
+  readonly passwordErrorMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator(LOGIN_LOCATORS.EMAIL_INPUT);
-    this.passwordInput = page.locator(LOGIN_LOCATORS.PASSWORD_INPUT);
-    this.loginButton = page.locator(LOGIN_LOCATORS.LOGIN_BUTTON);
-    this.errorMessage = page.locator(LOGIN_LOCATORS.ERROR_MESSAGE);
-    this.successMessage = page.locator(LOGIN_LOCATORS.SUCCESS_MESSAGE);
-    this.forgotPasswordLink = page.locator(LOGIN_LOCATORS.FORGOT_PASSWORD_LINK);
-    this.rememberMeCheckbox = page.locator(LOGIN_LOCATORS.REMEMBER_ME_CHECKBOX);
-    this.loginForm = page.locator(LOGIN_LOCATORS.LOGIN_FORM);
-    this.validationError = page.locator(LOGIN_LOCATORS.VALIDATION_ERROR);
+    this.emailInput = getLocator(page, LOGIN_LOCATORS.EMAIL_INPUT);
+    this.passwordInput = getLocator(page, LOGIN_LOCATORS.PASSWORD_INPUT);
+    this.loginButton = getLocator(page, LOGIN_LOCATORS.LOGIN_BUTTON);
+    this.firstAttemptLabel = getLocator(page, LOGIN_LOCATORS.FIRST_ATTEMPT_LABEL);
+    this.blockedUser = getLocator(page, LOGIN_LOCATORS.BLOCKED_USER);
+    this.emailErrorMessage = getLocator(page, LOGIN_LOCATORS.EMAIL_ERROR_MESSAGE);
+    this.passwordErrorMessage = getLocator(page, LOGIN_LOCATORS.PASSWORD_ERROR_MESSAGE);
   }
 
   /**
@@ -62,6 +59,27 @@ export class LoginPage {
   }
 
   /**
+   * Disabled login button
+   */
+  async expectDisabledLoginButton(): Promise<void> {
+    await expect(this.loginButton).toBeDisabled();
+  }
+
+  /**
+   * Expect email error message to be visible
+   */
+  async expectEmailErrorMessageVisible(): Promise<void> {
+    await expect(this.emailErrorMessage).toBeVisible();
+  }
+
+  /**
+   * Expect password error message to be visible
+   */
+  async expectPasswordErrorMessageVisible(): Promise<void> {
+    await expect(this.passwordErrorMessage).toBeVisible();
+  }
+
+  /**
    * Perform login with provided credentials
    */
   async login(email: string, password: string): Promise<void> {
@@ -78,31 +96,18 @@ export class LoginPage {
   }
 
   /**
-   * Perform login with invalid credentials
+   * Check if blocked user message is visible
    */
-  async loginWithInvalidCredentials(): Promise<void> {
-    await this.login(LOGIN_TEST_DATA.INVALID_EMAIL, LOGIN_TEST_DATA.INVALID_PASSWORD);
-  }
-
-  /**
-   * Check if error message is visible
-   */
-  async expectErrorMessage(): Promise<void> {
-    await expect(this.errorMessage).toBeVisible();
-  }
-
-  /**
-   * Check if specific error message is visible
-   */
-  async expectSpecificErrorMessage(message: string): Promise<void> {
-    await expect(this.page.getByText(message)).toBeVisible();
+  async expectBlockedUserMessage(): Promise<void> {
+    await expect(this.blockedUser).toBeVisible();
+    await expect(this.blockedUser).toHaveText('Usuario bloqueado después de 3 intentos fallidos');
   }
 
   /**
    * Check if success message is visible
    */
-  async expectSuccessMessage(): Promise<void> {
-    await expect(this.successMessage).toBeVisible();
+  async expectFirstAttemptMessage(): Promise<void> {
+    await expect(this.firstAttemptLabel).toBeVisible();
   }
 
   /**
@@ -119,118 +124,5 @@ export class LoginPage {
    */
   async expectOnLoginPage(): Promise<void> {
     await expect(this.page).toHaveURL(new RegExp(`${BASE_URLS.MAIN_APP}/login`));
-  }
-
-  /**
-   * Wait for page to load
-   */
-  async waitForPageLoad(): Promise<void> {
-    await this.page.waitForLoadState('networkidle');
-  }
-
-  /**
-   * Get current URL
-   */
-  async getCurrentUrl(): Promise<string> {
-    return this.page.url();
-  }
-
-  /**
-   * Clear email field
-   */
-  async clearEmail(): Promise<void> {
-    await this.emailInput.clear();
-  }
-
-  /**
-   * Clear password field
-   */
-  async clearPassword(): Promise<void> {
-    await this.passwordInput.clear();
-  }
-
-  /**
-   * Clear all form fields
-   */
-  async clearForm(): Promise<void> {
-    await this.clearEmail();
-    await this.clearPassword();
-  }
-
-  /**
-   * Check if email field is empty
-   */
-  async expectEmailEmpty(): Promise<void> {
-    await expect(this.emailInput).toHaveValue('');
-  }
-
-  /**
-   * Check if password field is empty
-   */
-  async expectPasswordEmpty(): Promise<void> {
-    await expect(this.passwordInput).toHaveValue('');
-  }
-
-  /**
-   * Check if remember me checkbox is checked
-   */
-  async expectRememberMeChecked(): Promise<void> {
-    await expect(this.rememberMeCheckbox).toBeChecked();
-  }
-
-  /**
-   * Check if remember me checkbox is unchecked
-   */
-  async expectRememberMeUnchecked(): Promise<void> {
-    await expect(this.rememberMeCheckbox).not.toBeChecked();
-  }
-
-  /**
-   * Toggle remember me checkbox
-   */
-  async toggleRememberMe(): Promise<void> {
-    await this.rememberMeCheckbox.click();
-  }
-
-  /**
-   * Click forgot password link
-   */
-  async clickForgotPassword(): Promise<void> {
-    await this.forgotPasswordLink.click();
-  }
-
-  /**
-   * Check if forgot password link is visible
-   */
-  async expectForgotPasswordLinkVisible(): Promise<void> {
-    await expect(this.forgotPasswordLink).toBeVisible();
-  }
-
-  /**
-   * Get email field value
-   */
-  async getEmailValue(): Promise<string> {
-    return await this.emailInput.inputValue();
-  }
-
-  /**
-   * Get password field value
-   */
-  async getPasswordValue(): Promise<string> {
-    return await this.passwordInput.inputValue();
-  }
-
-  /**
-   * Check if login button is enabled
-   */
-  async expectLoginButtonEnabled(): Promise<void> {
-    await expect(this.loginButton).toBeEnabled();
-  }
-
-  /**
-   * Check if login button is disabled
-   */
-  async expectLoginButtonDisabled(): Promise<void> {
-    await expect(this.loginButton).toBeDisabled();
   }
 } 
