@@ -12,23 +12,11 @@ import { TestHelpers, getLocator } from '@/utils/test-helpers';
 export class DashboardPage {
   readonly page: Page;
   readonly userMenu: Locator;
-  readonly logoutButton: Locator;
-  readonly sidebarNav: Locator;
-  readonly mainContent: Locator;
-  readonly welcomeMessage: Locator;
-  readonly userProfile: Locator;
-  readonly dashboardStats: Locator;
   readonly dashboardTitle: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.userMenu = getLocator(page, DASHBOARD_LOCATORS.USER_MENU);
-    this.logoutButton = getLocator(page, DASHBOARD_LOCATORS.LOGOUT_BUTTON);
-    this.sidebarNav = getLocator(page, DASHBOARD_LOCATORS.SIDEBAR_NAV);
-    this.mainContent = getLocator(page, DASHBOARD_LOCATORS.MAIN_CONTENT);
-    this.welcomeMessage = getLocator(page, DASHBOARD_LOCATORS.WELCOME_MESSAGE);
-    this.userProfile = getLocator(page, DASHBOARD_LOCATORS.USER_PROFILE);
-    this.dashboardStats = getLocator(page, DASHBOARD_LOCATORS.DASHBOARD_STATS);
     this.dashboardTitle = getLocator(page, DASHBOARD_LOCATORS.DASHBOARD_TITLE);
   }
 
