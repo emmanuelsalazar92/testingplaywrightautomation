@@ -110,13 +110,6 @@ export class LoginPage {
   }
 
   /**
-   * Perform login with invalid credentials
-   */
-  async loginWithInvalidCredentials(): Promise<void> {
-    await this.login(LOGIN_TEST_DATA.INVALID_EMAIL, LOGIN_TEST_DATA.INVALID_PASSWORD);
-  }
-
-  /**
    * Check if error message is visible
    */
   async expectErrorMessage(): Promise<void> {
@@ -244,33 +237,5 @@ export class LoginPage {
    */
   async expectForgotPasswordLinkVisible(): Promise<void> {
     await expect(this.forgotPasswordLink).toBeVisible();
-  }
-
-  /**
-   * Get email field value
-   */
-  async getEmailValue(): Promise<string> {
-    return await this.emailInput.inputValue();
-  }
-
-  /**
-   * Get password field value
-   */
-  async getPasswordValue(): Promise<string> {
-    return await this.passwordInput.inputValue();
-  }
-
-  /**
-   * Check if login button is enabled
-   */
-  async expectLoginButtonEnabled(): Promise<void> {
-    await expect(this.loginButton).toBeEnabled();
-  }
-
-  /**
-   * Check if login button is disabled
-   */
-  async expectLoginButtonDisabled(): Promise<void> {
-    await expect(this.loginButton).toBeDisabled();
   }
 } 
